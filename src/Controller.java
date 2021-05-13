@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -151,19 +152,44 @@ public class Controller
             {
                 double tmp = num.pop();
 
-                if(operators[i].equals("*")) num.push(tmp*Double.parseDouble(numbers[i]));
-                if(operators[i].equals("/")) num.push(tmp/Double.parseDouble(numbers[i]));
+                if(operators[i].equals("*")) num.push(preciseMulti(tmp,Double.parseDouble(numbers[i])));
+                if(operators[i].equals("/")) num.push(preciseDiv(tmp, Double.parseDouble(numbers[i])));
             }
         }
 
         result = num.elementAt(0);
         for(int i=0 ; i<op.size() ; i++)
         {
-            if(op.elementAt(i).equals("+")) result += num.get(i+1);
-            if(op.elementAt(i).equals("-")) result -= num.get(i+1);
+            if(op.elementAt(i).equals("+")) result = preciseAdd(result, num.get(i+1));
+            if(op.elementAt(i).equals("-")) result = preciseSub(result, num.get(i+1));
         }
 
         if(result > Double.MAX_VALUE || result < Double.MIN_VALUE) return result;
         else return (long)(result*100000000)/(double)100000000;
+    }
+
+    private double preciseAdd(double a, double b)
+    {
+        BigDecimal b1 = new BigDecimal(Double.toString(a)); 
+        BigDecimal b2 = new BigDecimal(Double.toString(b)); 
+        return b1.add(b2).doubleValue(); 
+    }
+    private double preciseSub(double a, double b)
+    {
+        BigDecimal b1 = new BigDecimal(Double.toString(a)); 
+        BigDecimal b2 = new BigDecimal(Double.toString(b)); 
+        return b1.subtract(b2).doubleValue(); 
+    }
+    private double preciseMulti(double a, double b)
+    {
+        BigDecimal b1 = new BigDecimal(Double.toString(a)); 
+        BigDecimal b2 = new BigDecimal(Double.toString(b)); 
+        return b1.multiply(b2).doubleValue(); 
+    }
+    private double preciseDiv(double a, double b)
+    {
+        BigDecimal b1 = new BigDecimal(Double.toString(a)); 
+        BigDecimal b2 = new BigDecimal(Double.toString(b)); 
+        return b1.divide(b2).doubleValue(); 
     }
 }
