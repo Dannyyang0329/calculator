@@ -1,4 +1,5 @@
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -77,10 +78,18 @@ public class Controller
     public void equals(ActionEvent event)
     {
         subScreen.setText(mainScreen.getText());
-        try {
-            mainScreen.setText(Double.toString(calculate()));
-        } catch (Exception e) {
-            System.out.println(e);
+        try 
+        {
+            Double ans = calculate();
+
+            BigDecimal bd = BigDecimal.valueOf(ans);
+            bd = bd.setScale(1, RoundingMode.HALF_UP);
+
+            mainScreen.setText(Double.toString(bd.doubleValue()));
+        } 
+        catch (Exception e) 
+        {
+            mainScreen.setText("ERROR");
         }
     }
 
@@ -164,8 +173,7 @@ public class Controller
             if(op.elementAt(i).equals("-")) result = preciseSub(result, num.get(i+1));
         }
 
-        if(result > Double.MAX_VALUE || result < Double.MIN_VALUE) return result;
-        else return (long)(result*100000000)/(double)100000000;
+        return result;
     }
 
     private double preciseAdd(double a, double b)
@@ -190,6 +198,7 @@ public class Controller
     {
         BigDecimal b1 = new BigDecimal(Double.toString(a)); 
         BigDecimal b2 = new BigDecimal(Double.toString(b)); 
-        return b1.divide(b2).doubleValue(); 
+        return b1.divide(b2, 7, RoundingMode.HALF_UP).doubleValue(); 
     }
+    
 }
